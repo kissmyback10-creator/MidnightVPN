@@ -2,7 +2,6 @@ package com.midnight.vpn.ui.screens.main
 
 import android.app.Application
 import android.content.Intent
-import android.util.Base64
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.midnight.vpn.data.remote.api.IpApi
@@ -15,7 +14,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -38,25 +36,25 @@ class MainViewModel @Inject constructor(
     private val ipApi: IpApi,
 ) : AndroidViewModel(application) {
 
-    private val _selectedServer = MutableStateFlow<VpnServer?>(null)
-    val selectedServer: StateFlow<VpnServer?> = _selectedServer.asStateFlow()
-
     private val _publicIp = MutableStateFlow("---")
 
     val uiState: StateFlow<MainUiState> = combine(
-        MidnightVpnService.connectionState,
-        MidnightVpnService.downloadSpeed,
-        MidnightVpnService.uploadSpeed,
+        combine(
+            MidnightVpnService.connectionState,
+            MidnightVpnService.downloadSpeed,
+            MidnightVpnService.uploadSpeed,
+        ) { connState, downSpeed, upSpeed -> Triple(connState, downSpeed, upSpeed) },
         MidnightVpnService.connectedServer,
         _publicIp,
-    ) { connState, downSpeed, upSpeed, serverName, ip ->
+        serverRepository.selectedServer,
+    ) { (connState, downSpeed, upSpeed), serverName, ip, selected ->
         MainUiState(
             connectionState = connState,
             publicIp = ip,
             downloadSpeed = FormatUtils.formatSpeed(downSpeed),
             uploadSpeed = FormatUtils.formatSpeed(upSpeed),
             connectedServerName = serverName,
-            selectedServer = _selectedServer.value,
+            selectedServer = selected,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -66,10 +64,6 @@ class MainViewModel @Inject constructor(
 
     init {
         fetchPublicIp()
-    }
-
-    fun selectServer(server: VpnServer) {
-        _selectedServer.value = server
     }
 
     fun toggleConnection() {
@@ -82,7 +76,7 @@ class MainViewModel @Inject constructor(
     }
 
     private fun connect() {
-        val server = _selectedServer.value ?: return
+        val server = serverRepository.selectedServer.value ?: return
         viewModelScope.launch {
             val configResult = serverRepository.getServerConfig(server)
             configResult.onSuccess { config ->

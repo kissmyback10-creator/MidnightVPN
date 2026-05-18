@@ -13,9 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -93,10 +91,12 @@ fun MidnightNavGraph() {
             }
             composable(Screen.Servers.route) {
                 val serverListViewModel: ServerListViewModel = hiltViewModel()
+                val selected by serverListViewModel.selectedServer.collectAsState()
                 ServerListScreen(
                     viewModel = serverListViewModel,
-                    selectedServer = null,
+                    selectedServer = selected,
                     onServerSelected = { server ->
+                        serverListViewModel.selectServer(server)
                         navController.navigate(Screen.Home.route) {
                             popUpTo(navController.graph.findStartDestination().id) {
                                 saveState = true
