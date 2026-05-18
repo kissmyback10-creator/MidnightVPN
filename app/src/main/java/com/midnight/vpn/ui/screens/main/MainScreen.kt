@@ -84,18 +84,20 @@ fun MainScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Selected server info
+            val serverName = uiState.connectedServerName
+            val selected = uiState.selectedServer
             when {
-                uiState.connectedServerName != null -> {
+                serverName != null -> {
                     Text(
-                        text = uiState.connectedServerName,
+                        text = serverName,
                         fontFamily = JetBrainsMonoFamily,
                         fontSize = 12.sp,
                         color = TextSecondary,
                     )
                 }
-                uiState.selectedServer != null -> {
+                selected != null -> {
                     Text(
-                        text = "${uiState.selectedServer!!.countryLong} (${uiState.selectedServer!!.ip})",
+                        text = "${selected.countryLong} (${selected.ip})",
                         fontFamily = JetBrainsMonoFamily,
                         fontSize = 12.sp,
                         color = TextSecondary,
