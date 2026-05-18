@@ -14,9 +14,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -44,7 +42,6 @@ object NetworkModule {
         return Retrofit.Builder()
             .baseUrl("https://www.vpngate.net/")
             .client(client)
-            .addConverterFactory(ScalarsConverterFactory.create())
             .build()
             .create(VpnGateApi::class.java)
     }
@@ -55,7 +52,6 @@ object NetworkModule {
         return Retrofit.Builder()
             .baseUrl("https://api.ipify.org/")
             .client(client)
-            .addConverterFactory(ScalarsConverterFactory.create())
             .build()
             .create(IpApi::class.java)
     }
