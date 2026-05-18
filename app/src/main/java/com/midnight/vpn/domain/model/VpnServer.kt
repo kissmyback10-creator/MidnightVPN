@@ -3,7 +3,7 @@ package com.midnight.vpn.domain.model
 data class VpnServer(
     val hostName: String,
     val ip: String,
-    val port: Int,
+    val port: Int = 443,
     val countryShort: String,
     val countryLong: String,
     val speed: Long,
