@@ -1,6 +1,5 @@
 package com.midnight.vpn.ui.screens.servers
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -112,11 +111,6 @@ fun ServerListScreen(
                         containerColor = MidnightCard,
                         labelColor = TextSecondary,
                     ),
-                    border = if (uiState.sortBy == option) {
-                        BorderStroke(1.dp, NeonPurple.copy(alpha = 0.5f))
-                    } else {
-                        BorderStroke(1.dp, MidnightCard)
-                    },
                     shape = RoundedCornerShape(8.dp),
                 )
             }
