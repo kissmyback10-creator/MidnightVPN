@@ -84,21 +84,30 @@ fun MainScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Selected server info
-            uiState.connectedServerName?.let { name ->
-                Text(
-                    text = name,
-                    fontFamily = JetBrainsMonoFamily,
-                    fontSize = 12.sp,
-                    color = TextSecondary,
-                )
-            }
-
-            if (uiState.selectedServer == null && uiState.connectionState == ConnectionState.DISCONNECTED) {
-                Text(
-                    text = "Select a server to connect",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = TextSecondary,
-                )
+            when {
+                uiState.connectedServerName != null -> {
+                    Text(
+                        text = uiState.connectedServerName,
+                        fontFamily = JetBrainsMonoFamily,
+                        fontSize = 12.sp,
+                        color = TextSecondary,
+                    )
+                }
+                uiState.selectedServer != null -> {
+                    Text(
+                        text = "${uiState.selectedServer!!.countryLong} (${uiState.selectedServer!!.ip})",
+                        fontFamily = JetBrainsMonoFamily,
+                        fontSize = 12.sp,
+                        color = TextSecondary,
+                    )
+                }
+                uiState.connectionState == ConnectionState.DISCONNECTED -> {
+                    Text(
+                        text = "Select a server to connect",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = TextSecondary,
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.weight(0.3f))

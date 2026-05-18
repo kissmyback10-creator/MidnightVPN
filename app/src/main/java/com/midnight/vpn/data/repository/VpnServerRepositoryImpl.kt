@@ -20,8 +20,14 @@ class VpnServerRepositoryImpl @Inject constructor(
 ) : VpnServerRepository {
 
     private val serversFlow = MutableStateFlow<Result<List<VpnServer>>>(Result.success(emptyList()))
+    private val _selectedServer = MutableStateFlow<VpnServer?>(null)
 
     override fun getServers(): Flow<Result<List<VpnServer>>> = serversFlow.asStateFlow()
+    override val selectedServer: StateFlow<VpnServer?> = _selectedServer.asStateFlow()
+
+    override fun selectServer(server: VpnServer?) {
+        _selectedServer.value = server
+    }
 
     override suspend fun refreshServers(): Result<List<VpnServer>> = withContext(Dispatchers.IO) {
         runCatching {

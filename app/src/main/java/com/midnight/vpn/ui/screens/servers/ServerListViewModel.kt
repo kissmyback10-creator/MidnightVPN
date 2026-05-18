@@ -3,6 +3,7 @@ package com.midnight.vpn.ui.screens.servers
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.midnight.vpn.domain.model.VpnServer
+import com.midnight.vpn.domain.repository.VpnServerRepository
 import com.midnight.vpn.domain.usecase.GetServersUseCase
 import com.midnight.vpn.domain.usecase.RefreshServersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,6 +35,7 @@ enum class SortOption {
 class ServerListViewModel @Inject constructor(
     private val getServersUseCase: GetServersUseCase,
     private val refreshServersUseCase: RefreshServersUseCase,
+    private val serverRepository: VpnServerRepository,
 ) : ViewModel() {
 
     private val _isLoading = MutableStateFlow(false)
@@ -93,4 +95,10 @@ class ServerListViewModel @Inject constructor(
     fun setCountryFilter(country: String?) {
         _filterCountry.value = country
     }
+
+    fun selectServer(server: VpnServer) {
+        serverRepository.selectServer(server)
+    }
+
+    val selectedServer: StateFlow<VpnServer?> = serverRepository.selectedServer
 }
