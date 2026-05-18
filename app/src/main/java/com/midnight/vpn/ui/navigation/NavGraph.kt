@@ -13,7 +13,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -43,8 +47,6 @@ private val bottomNavItems = listOf(Screen.Home, Screen.Servers, Screen.Settings
 @Composable
 fun MidnightNavGraph() {
     val navController = rememberNavController()
-    val mainViewModel: MainViewModel = hiltViewModel()
-    val serverListViewModel: ServerListViewModel = hiltViewModel()
 
     Scaffold(
         bottomBar = {
@@ -73,7 +75,7 @@ fun MidnightNavGraph() {
                             selectedTextColor = NeonPurple,
                             unselectedIconColor = TextSecondary,
                             unselectedTextColor = TextSecondary,
-                            indicatorColor = NeonPurple.copy(alpha = 0.12f),
+                            indicatorColor = Color.Transparent,
                         ),
                     )
                 }
@@ -86,14 +88,15 @@ fun MidnightNavGraph() {
             modifier = Modifier.padding(innerPadding),
         ) {
             composable(Screen.Home.route) {
+                val mainViewModel: MainViewModel = hiltViewModel()
                 MainScreen(viewModel = mainViewModel)
             }
             composable(Screen.Servers.route) {
+                val serverListViewModel: ServerListViewModel = hiltViewModel()
                 ServerListScreen(
                     viewModel = serverListViewModel,
-                    selectedServer = mainViewModel.selectedServer.value,
+                    selectedServer = null,
                     onServerSelected = { server ->
-                        mainViewModel.selectServer(server)
                         navController.navigate(Screen.Home.route) {
                             popUpTo(navController.graph.findStartDestination().id) {
                                 saveState = true
