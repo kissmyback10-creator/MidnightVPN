@@ -1,5 +1,6 @@
 package com.midnight.vpn.ui.screens.servers
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,6 +43,7 @@ import com.midnight.vpn.ui.theme.NeonPurple
 import com.midnight.vpn.ui.theme.TextPrimary
 import com.midnight.vpn.ui.theme.TextSecondary
 
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 fun ServerListScreen(
     viewModel: ServerListViewModel,
@@ -110,12 +112,11 @@ fun ServerListScreen(
                         containerColor = MidnightCard,
                         labelColor = TextSecondary,
                     ),
-                    border = FilterChipDefaults.filterChipBorder(
-                        borderColor = MidnightCard,
-                        selectedBorderColor = NeonPurple.copy(alpha = 0.5f),
-                        enabled = true,
-                        selected = uiState.sortBy == option,
-                    ),
+                    border = if (uiState.sortBy == option) {
+                        BorderStroke(1.dp, NeonPurple.copy(alpha = 0.5f))
+                    } else {
+                        BorderStroke(1.dp, MidnightCard)
+                    },
                     shape = RoundedCornerShape(8.dp),
                 )
             }
