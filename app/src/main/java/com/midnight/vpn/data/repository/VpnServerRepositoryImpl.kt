@@ -32,7 +32,7 @@ class VpnServerRepositoryImpl @Inject constructor(
 
     override suspend fun refreshServers(): Result<List<VpnServer>> = withContext(Dispatchers.IO) {
         runCatching {
-            val csv = vpnGateApi.getServerList()
+            val csv = vpnGateApi.getServerList().string()
             val servers = VpnGateParser.parse(csv)
                 .sortedBy { it.ping }
             serversFlow.value = Result.success(servers)

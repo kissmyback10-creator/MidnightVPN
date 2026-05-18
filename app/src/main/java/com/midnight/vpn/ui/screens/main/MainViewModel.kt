@@ -109,7 +109,7 @@ class MainViewModel @Inject constructor(
     private fun fetchPublicIp() {
         viewModelScope.launch {
             try {
-                _publicIp.value = ipApi.getPublicIp().trim()
+                _publicIp.value = ipApi.getPublicIp().string().trim()
             } catch (_: Exception) {
                 _publicIp.value = "Unavailable"
             }
